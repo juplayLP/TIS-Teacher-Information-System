@@ -1,7 +1,7 @@
-# BKR-LIS `Realprojekt BKR 2019, Julian Schüler`  
+# TIS - The Teacher's information System
 ![image](https://www.juplay.me/LISPreview3.png)  
 ## Projektbeschreibung
-Das Projekt "BKR-LIS" wurde geschrieben, um die Verwaltung des Kollegiums in Folgenden Punkten Technisch zu Vereinfachen:  
+Das Projekt "TIS" wurde geschrieben, um die Verwaltung des Kollegiums in Folgenden Punkten Technisch zu Vereinfachen:  
 &#35;1: &Uuml;bersicht über Vorhandene **Lehrer** sowie Erstellung neuer Lehrereinträge  
 &#35;2: &Uuml;bersicht, Erstellung und Einteilung von **Aufgaben**  
 &#35;3: &Uuml;bersicht und Erstellung Von **Klassen** sowie Aufteilung Von **(Stellvertretenden) Klassenlehrern**  
