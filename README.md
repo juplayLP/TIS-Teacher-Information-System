@@ -1,5 +1,5 @@
 # TIS - The Teacher's information System
-![image](https://www.juplay.me/LISPreview3.png)  
+![image](https://www.get-tis.tech/LISPreview3.png)  
 ## Projektbeschreibung
 Das Projekt "TIS" wurde geschrieben, um die Verwaltung des Kollegiums in Folgenden Punkten Technisch zu Vereinfachen:  
 &#35;1: &Uuml;bersicht über Vorhandene **Lehrer** sowie Erstellung neuer Lehrereinträge  
