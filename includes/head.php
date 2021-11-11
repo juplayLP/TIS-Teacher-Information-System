@@ -16,17 +16,19 @@
     <link href="/CSS/all.min.css" rel="stylesheet">
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes" name="viewport">
-    <link rel="stylesheet"
+    <!--<link rel="stylesheet"
           href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic&display=swap"
           async>
-    <link rel="canonical" href="https://juplay.me/bkr-lis/"/>
+    <link rel="canonical" href="https://juplay.me/bkr-lis/"/> -->
     <link rel="stylesheet" href="/CSS/adminlte.min.css" async>
     <link rel="stylesheet" href="/CSS/bootstrap-table.min.css" async>
     <link rel="stylesheet" href="/CSS/install.css" async>
     <title>TIS</title>
 
     <link rel="stylesheet" href="/plugins/BSTP/css/bootstrap-datetimepicker.min.css" async>
-
+    <script src="/plugins/jquery/jquery.min.js"></script>
+    <script src="/plugins/moment/moment-with-locales.min.js"></script>
+    <script src="/plugins/BSTP/js/bootstrap-datetimepicker.min.js"></script>
     <!-- Bootstrap 4 -->
 
     <!-- AdminLTE App -->

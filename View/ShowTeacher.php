@@ -3,7 +3,7 @@ header("Cache-Control: public, max-age=" . 604800);
 $path = $_SERVER['DOCUMENT_ROOT'];
 ?>
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <?php
 include_once $path . '/includes/head.php';
 ?>
@@ -20,7 +20,7 @@ include_once $path . '/includes/head.php';
     <div class="content-wrapper">
         <div class="content-header">
             <h1 class="m-0 text-dark">
-                Lehrer Anzeigen
+                Show Teacher Details
             </h1>
         </div>
         <section class="content">
@@ -29,17 +29,17 @@ include_once $path . '/includes/head.php';
                     <div class="card-body">
                         <form action="ShowTeacher.php" target="_self" method="post">
                             <div class="form-group">
-                                <label>Lehrer Ausw&auml;hlen</label>
-                                <select class="custom-select" name='Lehrer'>
+                                <label>Select Teacher</label>
+                                <select class="custom-select" name='teacher'>
                                     <?php
                                     require $path . '/includes/Connect.php';
-                                    if ($res = $con->query('SELECT L_ID, L_Vorname, L_Nachname FROM lehrer')) {
+                                    if ($res = $con->query('SELECT T_ID, T_FN, T_LN FROM teacher')) {
                                         $res->data_seek(0);
                                         while ($row = $res->fetch_assoc()) {
-                                            if (isset($_POST["Lehrer"]) && $_POST["Lehrer"] == $row['L_ID']) {
-                                                echo " <option value=" . $row['L_ID'] . " selected>" . $row['L_Vorname'] . " " . $row['L_Nachname'] . "</option>";
+                                            if (isset($_POST["teacher"]) && $_POST["teacher"] == $row['T_ID']) {
+                                                echo " <option value=" . $row['T_ID'] . " selected>" . $row['T_FN'] . " " . $row['T_LN'] . "</option>";
                                             } else {
-                                                echo " <option value=" . $row['L_ID'] . ">" . $row['L_Vorname'] . " " . $row['L_Nachname'] . "</option>";
+                                                echo " <option value=" . $row['T_ID'] . ">" . $row['T_FN'] . " " . $row['T_LN'] . "</option>";
                                             }
                                         }
                                     }
@@ -53,11 +53,11 @@ include_once $path . '/includes/head.php';
                 <div class="row">
                     <div class="col-md-6">
                         <?php
-                        if (isset($_POST["Lehrer"])) {
+                        if (isset($_POST["teacher"])) {
                             echo "
                         <div class='card'>
                             <div class='card-header'>
-                                <h3 class='card-title'>Allgemeine Informationen</h3>
+                                <h3 class='card-title'>General Informations</h3>
                             </div>
                         <div class='card-body p-0'>
                             <table class='table'>
@@ -65,119 +65,118 @@ include_once $path . '/includes/head.php';
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
-                                        <th>K&uuml;rzel</th>
-                                        <th>VZ/TZ</th>
-                                        <th>Eintrittsdatum</th>
-                                        <th>Dienstgrad</th>";
+                                        <th>Shorthand</th>
+                                        <th>Full/- Parttime</th>
+                                        <th>Date of Entry</th>
+                                        <th>seniority</th>";
                             if (isset($_SESSION["loggedin"])) {
                                 echo "
-                                        <th>Bearbeiten</th>
-                                        <th>Löschen</th>";
+                                        <th>Edit</th>
+                                        <th>Delete</th>";
                             }
                             echo '
                                     </tr>
                                 </thead>
                             <tbody>';
-                            if ($res = $con->query('SELECT * FROM lehrer,dienstgrad where L_ID=' . $_POST["Lehrer"] . ' AND L_DID=D_ID')) {
-                                $res->data_seek(0);
+                            if ($res = $con->query('SELECT * FROM teacher,seniority where T_ID=' . $_POST["teacher"] . ' AND T_SID=S_ID;')) {
                                 while ($row = $res->fetch_assoc()) {
                                     echo " <tr>
-                                <th scope='row'>" . $row['L_ID'] . "</th>
-                                <td>" . $row['L_Vorname'] . " " . $row['L_Nachname'] . "</td>
-                                <td>" . $row['L_Kuerzel'] . "</td>
+                                <th scope='row'>" . $row['T_ID'] . "</th>
+                                <td>" . $row['T_FN'] . " " . $row['T_LN'] . "</td>
+                                <td>" . $row['T_SH'] . "</td>
                                 <td>";
-                                    if ($row['L_VZTZ'] == 1) {
-                                        echo "Vollzeit";
+                                    if ($row['T_ET'] == 1) {
+                                        echo "Full Time";
                                     } else {
-                                        echo "Teilzeit";
+                                        echo "Part Time";
                                     }
                                     echo "</td>
-                                <td>" . $row['L_Eintritt'] . "</td>
-                                <td>" . $row['D_Bez'] . "</td>";
+                                <td>" . $row['T_DOE'] . "</td>
+                                <td>" . $row['S_RNK'] . "</td>";
                                     if (isset($_SESSION["loggedin"])) {
                                         echo "
                                 <td>
-                                    <a class='btn btn-warning' style='color:white;' data-toggle='modal' data-target='#LehrerBearbeiten'>
+                                    <a class='btn btn-warning' style='color:white;' data-toggle='modal' data-target='#EditTeacher'>
                                         <i class='icon fas fa-pencil-ruler'></i>
                                     </a>
                                 </td>
                                 <td>
-                                    <a class='btn btn-danger' data-toggle='modal' data-target='#LehrerLoeschen' style='color:white;'>
+                                    <a class='btn btn-danger' data-toggle='modal' data-target='#DeleteTeacher' style='color:white;'>
                                         <i class='icon fas fa-trash'></i>
                                     </a>
                                 </td>
-                                    <div class='modal fade' id='LehrerBearbeiten' data-backdrop='static'  tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                    <div class='modal fade' id='EditTeacher' data-backdrop='static'  tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
                                         <div class='modal-dialog modal-xl' role='document'>
                                             <div class='modal-content'>
                                                 <div class='modal-header'>
-                                                    <h5 class='modal-title' id='exampleModalLabel'>Lehrer Bearbeiten</h5>
+                                                    <h5 class='modal-title' id='exampleModalLabel'>Edit Teacher</h5>
                                                     <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
                                                         <span aria-hidden='true'>&times;</span>
                                                     </button>
                                                 </div>
                                                     <form action='EditTeacher.php' target='_self' method='post'>
-                                                        <div class='modal-body'>";
-                                        if ($res = $con->query('SELECT * FROM lehrer,dienstgrad where L_ID=' . $_POST["Lehrer"] . ' AND L_DID=D_ID')) {
+                                                        <div class='modal-body'>";}
+                                        if ($res = $con->query('SELECT * FROM teacher,seniority where T_ID=' . $_POST["teacher"] . ' AND T_SID=S_ID')) {
                                             $res->data_seek(0);
                                             while ($row = $res->fetch_assoc()) {
-                                                $ldg = $row['L_DID'];
-                                                $eintritt = $row['L_Eintritt'];
+                                                $ldg = $row['T_SID'];
+                                                $entry = $row['T_DOE'];
                                                 echo "
                                                             <div class='form-group'>
-                                                                <label>Lehrer-Identifikationsnummer</label>
-                                                                <input type='text' class='p-0 form-control'  readonly name='Lehrer' value='" . $row["L_ID"] . "'></br>
+                                                                <label>Teacher ID</label>
+                                                                <input type='text' class='p-0 form-control'  readonly name='teacher' value='" . $row["T_ID"] . "'></br>
                                                             </div>
                                                             <div class='form-group'>
-                                                                <label>Name</label>
-                                                                <input type='text' class='p-0 form-control' name='Name' value='" . $row['L_Nachname'] . "'></br>
+                                                                <label>Last name</label>
+                                                                <input type='text' class='p-0 form-control' name='ln' value='" . $row['T_LN'] . "'></br>
                                                             </div>
                                                             <div class='form-group'>
-                                                                <label> Vorname </label>
-                                                                <input type='text' class='p-0 form-control' name='Vorname' value='" . $row['L_Vorname'] . "'></br>
+                                                                <label> first name </label>
+                                                                <input type='text' class='p-0 form-control' name='fn' value='" . $row['T_FN'] . "'></br>
                                                             </div>
                                                             <div class='form-group'>
-                                                                <label> K&uuml;rzel </label>
-                                                                <input type='text' class='p-0 form-control' name='Kuerzel' value='" . $row['L_Kuerzel'] . "'></br>
+                                                                <label> shorthand </label>
+                                                                <input type='text' class='p-0 form-control' name='sh' value='" . $row['T_SH'] . "'></br>
                                                             </div>
                                                             <div class='form-check'>";
-                                                if ($row['L_VZTZ'] == 1) {
-                                                    echo "<input type='checkbox' class='form-check-input' name='VZTZ' checked id='VZTZ'>";
+                                                if ($row['T_ET'] == 1) {
+                                                    echo "<input type='checkbox' class='form-check-input' name='ET' checked id='ET'>";
                                                 } else {
-                                                    echo "<input type='checkbox' class='form-check-input' name='VZTZ' id='VZTZ'>";
+                                                    echo "<input type='checkbox' class='form-check-input' name='ET' id='ET'>";
                                                 }
                                                 echo "
-                                                            <label class='form-check-label' for='VZTZ'>Auf Vollzeit angestellt?</label>
+                                                            <label class='form-check-label' for='ET'>Fulltime employed?</label>
                                                             </div></br>
                                                             <div class='form-group'>
-                                                                <label>Eintrittsdatum</label>
-                                                                <div class='input-group' id='Eintrittdtp'>
+                                                                <label>Date of Entry</label>
+                                                                <div class='input-group' id='DOE'>
                                                                     <div class='input-group-prepend'>
                                                                         <span class='input-group-text'>
                                                                             <i class='far fa-calendar-alt'></i>
                                                                         </span>
                                                                     </div>
-                                                                    <input class='form-control float-right' type='text' name='Eintritt' id='Eintritt'>
+                                                                    <input class='form-control float-right' type='text' name='DOE id='DOE'>
                                                                     </div>
                   <script type='text/javascript'>
                     $(function () {
-                        $('#Eintritt').datetimepicker({
-                            locale: 'de',
+                        $('#DOE').datetimepicker({
+                            locale: 'EN',
                             format: 'YYYY-MM-DD',
-                            date: '" . $eintritt . "'
+                            date: '" . $entry . "'
                             });
                         });
                   </script>
                   </div>
                   <div class='form-group'>
-                    <label> Dienstgrad </label>
-                    <select class='form-control' name='Dienstgrad'>";
-                                                if ($res = $con->query('SELECT * FROM dienstgrad')) {
+                    <label> Seniority </label>
+                    <select class='form-control' name='Seniority'>";
+                                                if ($res = $con->query('SELECT * FROM seniority')) {
                                                     $res->data_seek(0);
                                                     while ($row = $res->fetch_assoc()) {
-                                                        if ($ldg == $row['D_ID']) {
-                                                            echo "<option value='" . $row['D_ID'] . "' selected>" . $row['D_Bez'] . "</option>";
+                                                        if ($ldg == $row['S_ID']) {
+                                                            echo "<option value='" . $row['S_ID'] . "' selected>" . $row['S_RNK'] . "</option>";
                                                         } else {
-                                                            echo "<option value='" . $row['D_ID'] . "'>" . $row['D_Bez'] . "</option>";
+                                                            echo "<option value='" . $row['S_ID'] . "'>" . $row['S_RNK'] . "</option>";
                                                         }
                                                     }
                                                 }
@@ -187,102 +186,100 @@ include_once $path . '/includes/head.php';
                                         }
                                         echo "</div>
       <div class='modal-footer'>
-        <button type='button' class='btn btn-secondary' data-dismiss='modal'>Schlie&szlig;en</button>
-        <button type='submit' class='btn btn-primary'>Speichern</button>
+        <button type='button' class='btn btn-secondary' data-dismiss='modal'>Abort and Close</button>
+        <button type='submit' class='btn btn-primary'>Save</button>
       </div>
       </form>
     </div>
   </div>
-</div>
-<div class='modal fade' id='LehrerLoeschen' tabindex='-1' role='dialog' aria-labelledby='LehrerLoeschen' aria-hidden='true'>
+</div>";} echo"
+<div class='modal fade' id='DeleteTeacher' tabindex='-1' role='dialog' aria-labelledby='DeleteTeacher' aria-hidden='true'>
   <div class='modal-dialog' role='document'>
     <div class='modal-content'>
       <div class='modal-header'>
-        <h5 class='modal-title' id='exampleModalLabel'>Best&auml;tigen</h5>
+        <h5 class='modal-title' id='exampleModalLabel'>Confirm</h5>
         <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
           <span aria-hidden='true'>&times;</span>
         </button>
       </div>
       <div class='modal-body'>
-        Möchten sie den Eintrag \"";
-                                        if ($res = $con->query('SELECT L_ID, L_Vorname, L_Nachname FROM lehrer WHERE L_ID=' . $_POST['Lehrer'])) {
+        Do you really want to delete the entry of the following teacher: </br>";
+                                        if ($res = $con->query('SELECT T_ID, T_FN, T_LN FROM teacher WHERE T_ID=' . $_POST['teacher'])) {
                                             $res->data_seek(0);
                                             while ($row = $res->fetch_assoc()) {
-                                                echo $row['L_Vorname'] . " " . $row['L_Nachname'];
+                                                echo $row['T_FN'] . " " . $row['T_LN'];
                                             }
                                         }
-                                        echo "\" wirklich L&ouml;schen?</div>
+                                        echo "</div>
       <div class='modal-footer'>
-        <button type='button' class='btn btn-outline-secondary' data-dismiss='modal'>Nein</button>
-        <a href='LehrerLoeschen.php?Lehrer=" . $_POST['Lehrer'] . "' class='btn btn-danger'>Ja</a>
+        <button type='button' class='btn btn-outline-secondary' data-dismiss='modal'>No</button>
+        <a href='DeleteTeacher.php?Teacher=" . $_POST['teacher'] . "' class='btn btn-danger'>Yes</a>
       </div>
     </div>
-  </div>
 </div>
                                     </tr>";
                                     }
                                 }
-                            }
                             echo '</tbody>
                     </table>
                 </div>
             </div>';
                             echo '<script type="text/javascript">
-                                function klconfirm(K_ID,L_ID) {
+                                function klconfirm(C_ID,T_ID) {
                                   if(confirm("Möchten sie den Eintrag wirklich Löschen?")){
-                                      location.href = "/View/DeleteClassTeacher.php?K_ID="+arguments[0]+"&L_ID="+arguments[1];
+                                      location.href = "/View/DeleteClassTeacher.php?C_ID="+arguments[0]+"&T_ID="+arguments[1];
                                   }
                                   }
                     </script>';
-                            if ($res = $con->prepare('SELECT * FROM lehrer,kl_s,klassen where lehrer.L_ID=' . $_POST["Lehrer"] . ' AND lehrer.L_ID=kl_s.L_ID AND kl_s.K_ID=klassen.K_ID')) {
+                            if ($res = $con->prepare('SELECT * FROM teacher,cl_t,classes where teacher.T_ID=' . $_POST["teacher"] . ' AND teacher.T_ID=cl_t.T_ID AND cl_t.C_ID=classes.C_ID')) {
                                 $res->execute();
                                 $res->store_result();
                                 if ($res->num_rows > 0) {
                                     echo '<div class="card ">
                         <div class="card-header">
-                            <h3 class="card-title">Klassenlehrer</h3>
+                            <h3 class="card-title">Class Teacher</h3>
                         </div>
                         <div class="card-body p-0">
                         <table class="table">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Klasse</th>
-                            <th>Klassenk&uuml;rzel</th>
+                            <th>Class</th>
+                            <th>Shorthand</th>
                             <th>Status</th>';
                                     if (isset($_SESSION["loggedin"])) {
                                         echo "
-                            <th>Bearbeiten</th>
-                            <th>Löschen</th>";
+                            <th>Edit</th>
+                            <th>Delete</th>";
                                     }
                                     echo '
                         </tr>
                         </thead>
                         <tbody>';
-                                    if ($rest = $con->query('SELECT * FROM lehrer,kl_s,klassen where lehrer.L_ID=' . $_POST["Lehrer"] . ' AND lehrer.L_ID=kl_s.L_ID AND kl_s.K_ID=klassen.K_ID')) {
+                                    if ($rest = $con->query('SELECT * FROM teacher,cl_t,classes where teacher.T_ID=' . $_POST["teacher"] . ' AND teacher.T_ID=cl_t.T_ID AND cl_t.C_ID=classes.C_ID')) {
                                         $rest->data_seek(0);
                                         $i = 0;
                                         while ($row = $rest->fetch_assoc()) {
                                             $i = $i + 1;
                              echo " <tr>
-                                        <th scope='row'>" . $row['K_ID'] . "</th>
-                                        <td>" . $row['K_Bez'] . "</td>
-                                        <td>" . $row['K_Kuerzel'] . "</td>
+                                        <th scope='row'>" . $row['C_ID'] . "</th>
+                                        <td>" . $row['C_D'] . "</td>
+                                        <td>" . $row['C_SH'] . "</td>
                                         <td>";
-                                            if ($row['KL_status'] == 0) {
-                                                echo "Stellvertretender Klassenlehrer";
+                                            if ($row['CT_S'] == 0) {
+                                                echo "Supplementary Classteacher";
                                             } else {
-                                                echo "Klassenlehrer";
+                                                echo "Classteacher";
                                             }
                                             if(isset($_SESSION["loggedin"])){echo " </td>
                                         
                                         <td>
                                         <form class='hide' action='ShowTeacher.php?EditKL=true' target='_self' method='post'>
-                                            <input type='text' style='display:none;' class='p-0 hide form-control' name='Lehrer' value='" . $_POST['Lehrer'] . "'>
-                                            <input type='text' style='display:none;'  class='p-0 hide form-control' name='KID' value='" . $row['K_ID'] . "'>
+                                            <input type='text' style='display:none;' class='p-0 hide form-control' name='Lehrer' value='" . $_POST['teacher'] . "'>
+                                            <input type='text' style='display:none;'  class='p-0 hide form-control' name='KID' value='" . $row['C_ID'] . "'>
                                             <button class='btn btn-warning' type='submit' style='color:white;' '><i class='icon fas fa-pencil-ruler'></i></a>
                                         </form></td>
-                                        <td><a class='btn btn-danger' onclick='klconfirm(" . $row['K_ID'] . "," . $row['L_ID'] . ")' style='color:white;'><i class='icon fas fa-trash'></i></a></td>
+                                        <td><a class='btn btn-danger' onclick='klconfirm(" . $row['C_ID'] . "," . $row['T_ID'] . ")' style='color:white;'><i class='icon fas fa-trash'></i></a></td>
                                     </tr>";
                                         }else{echo "</td></tr>";
                                         }}
@@ -290,46 +287,40 @@ include_once $path . '/includes/head.php';
                                         if ($rest->num_rows < 2) {
                                             if(isset($_SESSION["loggedin"])){
                                             echo '<div class="card-footer">
-                            <a class="btn btn-success" style="color:white;" data-toggle="modal" data-target="#Klassenlehrer1"><i class="nav-icon fas fa-plus" ></i> Hinzuf&uuml;gen</a>
+                            <a class="btn btn-success" style="color:white;" data-toggle="modal" data-target="#Classteacher1"><i class="nav-icon fas fa-plus" ></i> Hinzuf&uuml;gen</a>
                             </div>';
                                         }}
                                     }
                                 } else {
                                     echo '<div class="card">
                             <div class="card-header">
-                                <h3 class="card-title">Klassenlehrer</h3>
+                                <h3 class="card-title">Class Teacher</h3>
                             </div>';
                                  if(isset($_SESSION["loggedin"]))  {
                             echo'<div class="card-body">
-                                <a class="btn btn-success" style="color:white;" data-toggle="modal" data-target="#Klassenlehrer1"><i class="nav-icon fas fa-plus"></i> Hinzuf&uuml;gen</a>
+                                <a class="btn btn-success" style="color:white;" data-toggle="modal" data-target="#ClassTeacher1"><i class="nav-icon fas fa-plus"></i> Add</a>
                             </div>';}
 
                                 }
                                 echo "</div>
- <div class='modal fade' id='Klassenlehrer1' tabindex='-1' role='dialog' aria-labelledby='Klassenlehrer1' aria-hidden='true'>
+ <div class='modal fade' id='ClassTeacher1' tabindex='-1' role='dialog' aria-labelledby='ClassTeacherLabel' aria-hidden='true'>
   <div class='modal-dialog' role='document'>
     <div class='modal-content'>
       <div class='modal-header'>
-        <h5 class='modal-title' id='exampleModalLabel'>Best&auml;tigen</h5>
+        <h5 class='modal-title' id='ClassTeacherLabel'>Assign Class Teacher</h5>
         <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
           <span aria-hidden='true'>&times;</span>
         </button>
       </div>
       <div class='modal-body'>
-        Möchten sie den Eintrag \"";
-                                if ($res = $con->query('SELECT L_ID, L_Vorname, L_Nachname FROM lehrer WHERE L_ID=' . $_POST['Lehrer'])) {
-                                    $res->data_seek(0);
-                                    while ($row = $res->fetch_assoc()) {
-                                        echo $row['L_Vorname'] . " " . $row['L_Nachname'];
-                                    }
-                                }
-                                echo "\" wirklich L&ouml;schen?</div>
+        
       <div class='modal-footer'>
-        <button type='button' class='btn btn-outline-secondary' data-dismiss='modal'>Nein</button>
-        <a href='LehrerLoeschen.php?Lehrer=" . $_POST['Lehrer'] . "' class='btn btn-danger'>Ja</a>
+        <button type='button' class='btn btn-outline-secondary' data-dismiss='modal'>No</button>
+        <a href='AddClassTeacher.php?' class='btn btn-danger'>Ja</a>
       </div>
     </div>
-  </div>
+</div>
+</div>
 </div>";
                                 if (isset($_POST["KID"])&&isset($_GET["EditKL"])){
                                   echo "  <script>
@@ -337,21 +328,21 @@ include_once $path . '/includes/head.php';
                                         $('#Klassenlehrer2').modal('show');
                                     });
                                     </script>
-                                 <div class='modal show fade' id='Klassenlehrer2' tabindex='-1' role='dialog' aria-labelledby='Klassenlehrer1' aria-hidden='true'>
+                                 <div class='modal show fade' id='ClassTeacher2' tabindex='-1' role='dialog' aria-labelledby='ClassTeacher2' aria-hidden='true'>
                                             <div class='modal-dialog' role='document'>
                                                 <div class='modal-content'>
                                                     <div class='modal-header'>
-                                                        <h5 class='modal-title' id='exampleModalLabel'>Bearbeiten</h5>
+                                                        <h5 class='modal-title' id='exampleModalLabel'>Edit</h5>
                                                         <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
                                                             <span aria-hidden='true'>&times;</span>
                                                         </button>
                                                     </div>
                                                     <form action='EditClassTeacher.php' method='post'>
                                                     <div class='modal-body'>
-                                                     <input type='text' readonly style='display:none;' class='p-0 hide form-control' name='Lehrer' value='" . $_POST['Lehrer'] . "'>
-                                                     <input type='text' readonly style='display:none;'  class='p-0 hide form-control' name='KID' value='" . $_POST['KID'] . "'>
+                                                     <input type='text' readonly style='display:none;' class='p-0 hide form-control' name='Teacher' value='" . $_POST['teacher'] . "'>
+                                                     <input type='text' readonly style='display:none;'  class='p-0 hide form-control' name='CID' value='" . $_POST['CID'] . "'>
                                                     <div class='form-group' style='margin-left:20px;margin-top:25px;'>";
-                                                     if ($rest = $con->query('SELECT * FROM lehrer,kl_s,klassen where lehrer.L_ID=' . $_POST["Lehrer"] . ' AND lehrer.L_ID=kl_s.L_ID AND kl_s.K_ID='.$_POST['KID'].' AND kl_s.K_ID=klassen.K_ID'))
+                                                     if ($rest = $con->query('SELECT * FROM teacher,cl_t,classes where teacher.T_ID=' . $_POST["teacher"] . ' AND teacher.T_ID=cl_t.T_ID AND cl_t.C_ID='.$_POST['CID'].' AND cl_t.C_ID=classes.C_ID'))
                                                          $rest->data_seek(0);
                                                         while ($row = $rest->fetch_assoc()) {
                                                     if ($row['KL_status'] == 1) {
@@ -364,38 +355,38 @@ include_once $path . '/includes/head.php';
                                                             </div></div></br>
                                 
       <div class='modal-footer'>
-        <button type='button' class='btn btn-outline-secondary' data-dismiss='modal'>Nein</button>
-        <button type='submit' class='btn btn-primary'>Ja</a>
+        <button type='button' class='btn btn-outline-secondary' data-dismiss='modal'>No</button>
+        <button type='submit' class='btn btn-primary'>Yes</a>
       </div>
     </div>
   </div>
 </div>";}
                                 echo " ";
                             }
-                            if ($res = $con->prepare('SELECT * FROM lehrer,lehrer_hat_fakultas,fakultas where lehrer.L_ID=' . $_POST["Lehrer"] . ' AND lehrer.L_ID=lehrer_hat_fakultas.L_ID AND lehrer_hat_fakultas.F_ID=fakultas.F_ID')) {
+                            if ($res = $con->prepare('SELECT * FROM teacher,thf,faculties where teacher.T_ID=' . $_POST["teacher"] . ' AND teacher.T_ID=thf.T_ID AND thf.F_ID=faculties.F_ID')) {
                                 $res->execute();
                                 $res->store_result();
                                 if ($res->num_rows > 0) {
                                     echo '<div class="card ">
                         <div class="card-header">
-                            <h3 class="card-title">Fakultas</h3>
+                            <h3 class="card-title">Faculties</h3>
                         </div>
                         <div class="card-body p-0">
                         <table class="table">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Bezeichnung</th>';
+                            <th>Descriptor</th>';
                                     if (isset($_SESSION["loggedin"])) {
                                         echo "
-                            <th>Bearbeiten</th>
-                            <th>Löschen</th>";
+                            <th>Edit</th>
+                            <th>Delete</th>";
                                     }
                                     echo '
                         </tr>
                         </thead>
                         <tbody>';
-                                    if ($res = $con->query('SELECT * FROM lehrer,lehrer_hat_fakultas,fakultas where lehrer.L_ID=' . $_POST["Lehrer"] . ' AND lehrer.L_ID=lehrer_hat_fakultas.L_ID AND lehrer_hat_fakultas.F_ID=fakultas.F_ID')) {
+                                    if ($res = $con->query('SELECT * FROM teacher,thf,faculties where teacher.T_ID=' . $_POST["teacher"] . ' AND teacher.T_ID=thf.T_ID AND thf.F_ID=faculties.F_ID')) {
                                         $res->data_seek(0);
                                         $x = 1;
                                         while ($row = $res->fetch_assoc()) {
@@ -435,41 +426,41 @@ include_once $path . '/includes/head.php';
                                 }
                             }
                             echo "<div class=col-md-6>";
-                            if ($res = $con->prepare('SELECT * FROM lehrer,lehrer_hat_zks,zertifikatskurse where lehrer.L_ID=' . $_POST["Lehrer"] . ' AND lehrer.L_ID=lehrer_hat_zks.L_ID AND lehrer_hat_zks.ZK_ID=zertifikatskurse.ZK_ID')) {
+                            if ($res = $con->prepare('SELECT * FROM teacher,thcc,certificates where teacher.L_ID=' . $_POST["teacher"] . ' AND teacher.T_ID=thcc.T_ID AND thcc.C_ID=certificates.C_ID')) {
                                 $res->execute();
                                 $res->store_result();
                                 if ($res->num_rows > 0) {
                                     echo '<div class="card ">
                         <div class="card-header">
-                            <h3 class="card-title">Zertifikatskurse</h3>
+                            <h3 class="card-title">Certificate Courses</h3>
                         </div>
                         <div class="card-body p-0">
                         <table class="table">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Bezeichnung</th>
-                            <th>Erhalten am</th>
-                            <th>Kommentar</th>
+                            <th>Descriptor</th>
+                            <th>Date of Obtaining</th>
+                            <th>Comments</th>
                             ';
                                     if (isset($_SESSION["loggedin"])) {
                                         echo "
-                            <th>Bearbeiten</th>
-                            <th>Löschen</th>";
+                            <th>Edit</th>
+                            <th>Delete</th>";
                                     }
                                     echo '
                         </tr>
                         </thead>
                         <tbody>';
-                                    if ($res = $con->query('SELECT * FROM lehrer,lehrer_hat_zks,zertifikatskurse where lehrer.L_ID=' . $_POST["Lehrer"] . ' AND lehrer.L_ID=lehrer_hat_zks.L_ID AND lehrer_hat_zks.ZK_ID=zertifikatskurse.ZK_ID')) {
+                                    if ($res = $con->query('SELECT * FROM teacher,thcc,certificates where teacher.T_ID=' . $_POST["teacher"] . ' AND teacher.T_ID=thcc.T_ID AND thcc.CC_ID=certificates.CC_ID')) {
                                         $res->data_seek(0);
                                         $i = 1;
                                         while ($row = $res->fetch_assoc()) {
                                             echo " <tr>
                                         <th scope='row'>" . $i . "</th>
-                                        <td>" . $row['ZK_Bez'] . "</td>
-                                        <td>" . $row['zk_erhalt'] . "</td>
-                                        <td>" . $row['ZK_Kommentar'] . "</td>";
+                                        <td>" . $row['CC_Desc'] . "</td>
+                                        <td>" . $row['CC_DOR'] . "</td>
+                                        <td>" . $row['CC_Comm'] . "</td>";
                                              if (isset($_SESSION["loggedin"])) {
                                         echo "
                                         <td><a class='btn btn-warning' style='color:white;' data-toggle='modal' data-target='#ZK1'><i class='icon fas fa-pencil-ruler'></i></a></td>
@@ -483,48 +474,48 @@ include_once $path . '/includes/head.php';
                                         if (isset($_SESSION["loggedin"])) {
                                         echo "
                 <div class='card-footer'>
-                    <a class='btn btn-success' style='color:white;'><i class='nav-icon fas fa-plus'></i> Hinzuf&uuml;gen</a>
+                    <a class='btn btn-success' style='color:white;'><i class='nav-icon fas fa-plus'></i> Add</a>
                 </div>";}
                                         echo"</div>";
                                     }
                                 } else {
                                     echo '<div class="card">
                         <div class="card-header">
-                        <h3 class="card-title">Zertifikatskurse</h3>
+                        <h3 class="card-title">Certificate Courses</h3>
                         </div>';
                                     if (isset($_SESSION["loggedin"])) {
                                         echo '
                         <div class="card-body">
-                        <a class="btn btn-success" style="color:white;"><i class=\'nav-icon fas fa-plus\'></i> Hinzuf&uuml;gen</a>
+                        <a class="btn btn-success" style="color:white;"><i class=\'nav-icon fas fa-plus\'></i> Add</a>
                         </div>';}
                                     echo'</div>';
                                 }
                             }
-                            if ($res = $con->prepare('SELECT * FROM lehrer,lehrer_bearbeitet_aufgaben,aufgaben where lehrer.L_ID=' . $_POST["Lehrer"] . ' AND lehrer.L_ID=lehrer_bearbeitet_aufgaben.L_ID AND lehrer_bearbeitet_aufgaben.A_ID=aufgaben.A_ID')) {
+                            if ($res = $con->prepare('SELECT * FROM teacher,twot,task where teacher.T_ID=' . $_POST["teacher"] . ' AND teacher.T_ID=twot.T_ID AND twot.TASK_ID=task.TASK_ID')) {
                                 $res->execute();
                                 $res->store_result();
                                 if ($res->num_rows > 0) {
                                     echo '<div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Aufgaben</h3>
+                            <h3 class="card-title">tasks</h3>
                         </div>
                         <div class="card-body p-0">
                         <table class="table table-head-fixed text-wrap" >
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Bezeichnung</th>
-                            <th>Kommentar';
+                            <th>Descriptor</th>
+                            <th>Comment';
                                     if (isset($_SESSION["loggedin"])) {
                                         echo "
-                            <th>Bearbeiten</th>
-                            <th>Löschen</th>";
+                            <th>Edit</th>
+                            <th>Delete</th>";
                                     }
                                     echo '
                         </tr>
                         </thead>
                         <tbody>';
-                                    if ($res = $con->query('SELECT * FROM lehrer,lehrer_bearbeitet_aufgaben,aufgaben where lehrer.L_ID=' . $_POST["Lehrer"] . ' AND lehrer.L_ID=lehrer_bearbeitet_aufgaben.L_ID AND lehrer_bearbeitet_aufgaben.A_ID =aufgaben.A_ID')) {
+                                    if ($res = $con->query('SELECT * FROM teacher,twot,task where teacher.T_ID=' . $_POST["teacher"] . ' AND teacher.T_ID=lehrer_bearbeitet_aufgaben.L_ID AND lehrer_bearbeitet_aufgaben.A_ID =aufgaben.A_ID')) {
                                         $res->data_seek(0);
                                         $i = 1;
                                         while ($row = $res->fetch_assoc()) {
@@ -562,7 +553,6 @@ include_once $path . '/includes/head.php';
                                     echo' </div> ';
                                 }
                             }
-                        }
                         ?>
                     </div>
                 </div>

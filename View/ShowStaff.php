@@ -33,35 +33,35 @@ include_once($path.'/includes/Sidebar.php');
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>K&uuml;rzel</th>
-                            <th>VZ/TZ</th>
-                            <th>Eintrittsdatum</th>
-                            <th>Dienstgrad</th><?php
+                            <th>Shorthand</th>
+                            <th>Full/Parttime</th>
+                            <th>Date Of Entry</th>
+                            <th>Seniority</th><?php
                             if (isset($_SESSION["loggedin"])) {
                             echo "
-                            <th>Bearbeiten</th>
-                            <th>Löschen</th>";
+                            <th>Edit</th>
+                            <th>Delete</th>";
                             }?>
                         </tr>
                         </thead>
                         <tbody>
                             <?php
-                            if ($res = $con->query('SELECT * FROM lehrer,dienstgrad WHERE L_DID=D_ID')){
+                            if ($res = $con->query('SELECT * FROM teacher,seniority WHERE T_SID=S_ID')){
                                 $res->data_seek(0);
                                 while ($row = $res->fetch_assoc()) {
                                     echo " <tr>
-                                    <th scope='row'>" . $row['L_ID'] . "</th>
-                                    <td>" . $row['L_Vorname'] . " " . $row['L_Nachname'] . "</td>
-                                    <td>" . $row['L_Kuerzel'] . "</td>
+                                    <th scope='row'>" . $row['T_ID'] . "</th>
+                                    <td>" . $row['T_FN'] . " " . $row['T_LN'] . "</td>
+                                    <td>" . $row['T_SH'] . "</td>
                                     <td>";
-                                    if ($row['L_VZTZ'] == 1) {
-                                        echo "Vollzeit";
+                                    if ($row['T_ET'] == 1) {
+                                        echo "Fulltime";
                                     } else {
-                                        echo "Teilzeit";
+                                        echo "Parttime";
                                     }
                                     echo "</td>
-                                    <td>" . $row['L_Eintritt'] . "</td>
-                                    <td>" . $row['D_Bez'] . "</td>";
+                                    <td>" . $row['T_DOE'] . "</td>
+                                    <td>" . $row['S_RNK'] . "</td>";
                                     if (isset($_SESSION["loggedin"])) {
                                         echo "
                                         <td>
@@ -71,7 +71,7 @@ include_once($path.'/includes/Sidebar.php');
                                         </td>
                                         <td>
                                         <form class='hide'>
-                                            <input type='text' style='Display:none;' readonly name='Lehrer' value='" . $row["L_ID"] . "'>
+                                            <input type='text' style='Display:none;' readonly name='Lehrer' value='" . $row["T_ID"] . "'>
                                             <a class='btn btn-danger' data-toggle='modal' data-target='#LehrerLoeschen' style='color:white;'>
                                                 <i class='icon fas fa-trash'></i>
                                             </a>
@@ -105,19 +105,19 @@ include_once($path.'/includes/Sidebar.php');
                                             while ($row = $res->fetch_assoc()) {
                                                 echo "
                                                             <div class='form-group'>
-                                                                <label>Lehrer-Identifikationsnummer</label>
+                                                                <label>Teacher-ID</label>
                                                                 <input type='text' class='p-0 form-control'  readonly name='Lehrer' value='" . $row["L_ID"] . "'></br>
                                                             </div>
                                                             <div class='form-group'>
-                                                                <label>Name</label>
+                                                                <label>Last name</label>
                                                                 <input type='text' class='p-0 form-control' name='Name'></br>
                                                             </div>
                                                             <div class='form-group'>
-                                                                <label> Vorname </label>
+                                                                <label> first name </label>
                                                                 <input type='text' class='p-0 form-control' name='Vorname'></br>
                                                             </div>
                                                             <div class='form-group'>
-                                                                <label> K&uuml;rzel </label>
+                                                                <label> Shorthand </label>
                                                                 <input type='text' class='p-0 form-control' name='Kuerzel'></br>
                                                             </div>
                                                             <div class='form-check'>    

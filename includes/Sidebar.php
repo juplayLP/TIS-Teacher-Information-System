@@ -1,7 +1,7 @@
 <aside class="main-sidebar sidebar-dark-primary">
     <a href="/index.php" class="brand-link">
-        <img src="/img/TIS.ico" alt="AdminLTE Logo" class="brand-image img-fluid" style="opacity: .8">
-        <span class="brand-text font-weight-light">BKR-<b>LIS</b></span>
+        <img src="/img/TIS.ico" alt="TIS Logo" class="brand-image img-fluid" style="opacity: .8">
+        <span class="brand-text font-weight-light"><b>TIS</b></span>
     </a>
     <!-- sidebar: style can be found in sidebar.less -->
     <div class="sidebar">

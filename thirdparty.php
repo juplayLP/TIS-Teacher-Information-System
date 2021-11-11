@@ -50,7 +50,7 @@ $path = $_SERVER['DOCUMENT_ROOT'];
                         <div class='card-header'>
                             <h3 class='card-title'>Bootstrap 4</h3>
                         </div>
-                        <div class="card-body">One of the most used ... out there.</div>
+                        <div class="card-body">One of the most used CSS/JS Frameworks out there.</div>
                         <div class="card-footer">
                             <button class="btn-outline-primary btn-sm" href="#">Learn more</button>
                         </div>
@@ -87,6 +87,7 @@ $path = $_SERVER['DOCUMENT_ROOT'];
                         </div>
                     </div>
                 </div>
+                <a class="btn btn-outline-primary blue" onclick="history.go(-1);">return to the previous page</a>
             </div>
             <noscript><p>This Site Requires Javascript to be enabled to work. please enable Javascript.</p></noscript>
         </div>

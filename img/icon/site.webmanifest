@@ -41,11 +41,17 @@
             "src": "/img/icon/android-chrome-384x384.png",
             "sizes": "384x384",
             "type": "image/png"
+        },
+        {
+            "src": "/img/icon/maskable_icon.png",
+            "sizes": "588x588",
+            "type": "image/png",
+            "purpose": "any maskable"
         }
     ],
     "theme_color": "#3a3943",
     "background_color": "#3a3943",
-    "start_url": "https://localhost",
+    "start_url": "https://localhost:8443/index.php",
     "display": "standalone",
     "orientation": "portrait"
 }
